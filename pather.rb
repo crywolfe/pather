@@ -20,36 +20,49 @@ def get_size(data)
   @vertical_length = data.length
 end
 
-
 # Find Hash locations
 
-hash_position = []
-for i in 0...@vertical_length
-  for j in 0...@horizontal_length
-    if @data[i][j] == "#"
-      hash_position.push([i,j])
+def get_hash_position
+
+  hash_position = []
+  for i in 0...@vertical_length
+    for j in 0...@horizontal_length
+      if @data[i][j] == "#"
+        hash_position.push([i,j])
+      end
     end
+  end
+
+  first_hash_pos = hash_position[0]
+  second_hash_pos = hash_position[1]
+  while first_hash_pos[0] < second_hash_pos[0]
+    first_hash_pos[0] += 1
+    @data[first_hash_pos[0]][first_hash_pos[1]] = "*"
+  end
+
+  while first_hash_pos[0] == second_hash_pos[0] && first_hash_pos[1] < second_hash_pos[1] - 1
+    first_hash_pos[1] += 1
+    @data[first_hash_pos[0]][first_hash_pos[1]] = "*"
   end
 end
 
-first_hash_pos = hash_position[0]
-second_hash_pos = hash_position[1]
 
 
-while first_hash_pos[0] < second_hash_pos[0]
-  first_hash_pos[0] += 1
-  @data[first_hash_pos[0]][first_hash_pos[1]] = "X"
+# Convert data array to string
+def convert_to_string
+  @data.join("\n")
 end
 
-while first_hash_pos[0] == second_hash_pos[0] && first_hash_pos[1] < second_hash_pos[1]
-  @data[first_hash_pos[0]][first_hash_pos[1]] = "X"
-  first_hash_pos[1] += 1
-end
-
-# Write data array to output.txt file
-
+# Write output to output.txt file
 def write_file(filename)
+  data = convert_to_string
   file = File.open(filename, "w")
-  file.write(@data)
+  file.write(data)
   file.close
 end
+
+
+get_file("input.txt")
+get_size(@data)
+get_hash_position
+write_file("output.txt")
