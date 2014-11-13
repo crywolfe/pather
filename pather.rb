@@ -58,20 +58,6 @@ def get_hash_position
       @data[hash_position[k][0]][hash_position[k][1]] = "*"
     end
   end
-
-  puts hash_position
-
-  # first_hash_pos = hash_position[0]
-  # second_hash_pos = hash_position[1]
-  # while first_hash_pos[0] < second_hash_pos[0]
-  #   first_hash_pos[0] += 1
-  #   @data[first_hash_pos[0]][first_hash_pos[1]] = "*"
-  # end
-
-  # while first_hash_pos[0] == second_hash_pos[0] && first_hash_pos[1] < second_hash_pos[1] - 1
-  #   first_hash_pos[1] += 1
-  #   @data[first_hash_pos[0]][first_hash_pos[1]] = "*"
-  # end
 end
 
 
