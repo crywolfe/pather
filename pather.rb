@@ -1,4 +1,4 @@
-
+#!/usr/bin/env ruby
 require 'pry'
 
 # Set input grid
@@ -99,18 +99,17 @@ end
 
 # MAIN
 def main
-  puts ARGV[0]
-  puts ARGV[1]
-
   g = Grid.new
-  g.get_file(ARGV[0])
+  # In order to have tests work with rspec, need to have a default value assigned to argv.
+  g.get_file(ARGV[0]="input.txt")
   g.get_size(g.data)
   g.get_hash_pos
 
   m = Move.new(g)
   m.run
 
-  g.write_file(ARGV[1])
+# In order to have tests work with rspec, need to have a default value assigned to argv.
+  g.write_file(ARGV[1]="output.txt")
 end
 
 main
