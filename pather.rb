@@ -1,82 +1,116 @@
 
-Pather = Struct.new(:data) do
-  data = []
-
-end
+require 'pry'
 
 # Set input grid
-@data = []
+class Grid
 
-# Get file and return it as an array
-def get_file(filename)
-  file = File.open(filename, "r")
-  file.each_line do |line|
-    line = line.delete "\n"
-    @data.push(line)
-  end
-  file.close
-  return @data
-end
+  attr_accessor :data
 
-# Determine size of grid
-
-def get_size(data)
-  @horizontal_length = data[0].length
-  @vertical_length = data.length
-end
-
-# Find Hash locations
-
-def get_hash_position
-  hash_position = []
-  for i in 0...@vertical_length
-    for j in 0...@horizontal_length
-      if @data[i][j] == "#"
-        hash_position.push([i,j])
-      end
-    end
+  def initialize
+    @data = []
   end
 
-# Abstract out to allow for more than 2 hashes in the grid
-  hash_num = hash_position.length
-  for k in 0...hash_num-1
-    # Move down
-    while hash_position[k][0] < hash_position[k+1][0]
-      hash_position[k][0] += 1
-      @data[hash_position[k][0]][hash_position[k][1]] = "*"
+  # Get file and return it as an array
+  def get_file(filename)
+    file = File.open(filename, "r")
+    file.each_line do |line|
+      line = line.delete "\n"
+      @data.push(line)
     end
+    file.close
+    @data
+  end #get_file
 
-    # Move to the right
-    while hash_position[k][0] == hash_position[k+1][0] && hash_position[k][1] < hash_position[k+1][1] - 1
-      hash_position[k][1] += 1
-      @data[hash_position[k][0]][hash_position[k][1]] = "*"
+  # Determine size of grid
+  def get_size(data)
+    @horizontal_length = data[0].length
+    @vertical_length = data.length
+  end
+  # Find Hash locations
+  def get_hash_pos
+    @hash_pos = []
+    for i in 0...@vertical_length
+      for j in 0...@horizontal_length
+        if @data[i][j] == "#"
+          @hash_pos << [i,j]
+        end
+      end # j
+    end # i
+    @hash_pos
+  end #get_hash_pos
+
+  # Convert data array to string
+  def convert_to_string
+    @data.join("\n")
+  end
+
+  # Write output to output.txt file
+  def write_file(filename)
+    data = convert_to_string
+    file = File.open(filename, "w")
+    file.write(data)
+    file.close
+  end
+end #Grid
+
+class Move
+  attr_reader :grid
+
+  def initialize(grid)
+    @grid = grid
+    @hash_pos = grid.get_hash_pos
+    @data = grid.data
+  end
+# Move down
+  def move_down(k)
+    while @hash_pos[k][0] < @hash_pos[k+1][0]
+      @hash_pos[k][0] += 1
+      @data[@hash_pos[k][0]][@hash_pos[k][1]] = "*"
     end
+  end
 
-    # Move to the left
-    while hash_position[k][0] == hash_position[k+1][0] && hash_position[k][1] > hash_position[k+1][1] + 1
-      hash_position[k][1] -= 1
-      @data[hash_position[k][0]][hash_position[k][1]] = "*"
+  # Move right
+  def move_right(k)
+    while @hash_pos[k][0] == @hash_pos[k+1][0] && @hash_pos[k][1] < @hash_pos[k+1][1] - 1
+      @hash_pos[k][1] += 1
+      @data[@hash_pos[k][0]][@hash_pos[k][1]] = "*"
+    end
+  end
+
+  # Move left
+  def move_left(k)
+    while @hash_pos[k][0] == @hash_pos[k+1][0] && @hash_pos[k][1] > @hash_pos[k+1][1] + 1
+      @hash_pos[k][1] -= 1
+      @data[@hash_pos[k][0]][@hash_pos[k][1]] = "*"
+    end
+  end
+
+# Run the move logic across the grid
+  def run
+    hash_num = grid.get_hash_pos.length
+    for k in 0...hash_num-1
+      move_down(k)
+      move_right(k)
+      move_left(k)
     end
   end
 end
 
 
+# MAIN
+def main
+  puts ARGV[0]
+  puts ARGV[1]
 
-# Convert data array to string
-def convert_to_string
-  @data.join("\n")
+  g = Grid.new
+  g.get_file(ARGV[0])
+  g.get_size(g.data)
+  g.get_hash_pos
+
+  m = Move.new(g)
+  m.run
+
+  g.write_file(ARGV[1])
 end
 
-# Write output to output.txt file
-def write_file(filename)
-  data = convert_to_string
-  file = File.open(filename, "w")
-  file.write(data)
-  file.close
-end
-
-
-get_file("input.txt")
-get_size(@data)
-get_hash_position
-write_file("output.txt")
+main
