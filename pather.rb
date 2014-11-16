@@ -27,11 +27,11 @@ class Grid
     @vertical_length = data.length
   end
   # Find Hash locations
-  def get_hash_pos
+  def get_hash_pos(data)
     @hash_pos = []
     for i in 0...@vertical_length
       for j in 0...@horizontal_length
-        if @data[i][j] == "#"
+        if data[i][j] == "#"
           @hash_pos << [i,j]
         end
       end # j
@@ -58,8 +58,8 @@ class Move
 
   def initialize(grid)
     @grid = grid
-    @hash_pos = grid.get_hash_pos
     @data = grid.data
+    @hash_pos = grid.get_hash_pos(@data)
   end
 # Move down
   def move_down(k)
@@ -87,7 +87,7 @@ class Move
 
 # Run the move logic across the grid
   def run
-    hash_num = grid.get_hash_pos.length
+    hash_num = grid.get_hash_pos(@data).length
     for k in 0...hash_num-1
       move_down(k)
       move_right(k)
@@ -100,16 +100,16 @@ end
 # MAIN
 def main
   g = Grid.new
-  # In order to have tests work with rspec, need to have a default value assigned to argv.
-  g.get_file(ARGV[0]="input.txt")
+  # In order to have command line tests work with rspec, need to have a default value conditinally assigned to argv.
+  g.get_file(ARGV[0]||="input.txt")
   g.get_size(g.data)
-  g.get_hash_pos
+  g.get_hash_pos(g.data)
 
   m = Move.new(g)
   m.run
 
-# In order to have tests work with rspec, need to have a default value assigned to argv.
-  g.write_file(ARGV[1]="output.txt")
+# In order to have command line tests work with rspec, need to have a default value conditionally assigned to argv.
+  g.write_file(ARGV[1]||="output.txt")
 end
 
 main
