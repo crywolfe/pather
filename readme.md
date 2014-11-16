@@ -8,3 +8,5 @@ To set up an executable on your local machine, you must take the following steps
 
 1.  enter `chmod +x pather.rb`
 2.  enter `./pather.rb input.txt output.txt` or any other input and output text file.
+
+rspec tests are also included.  To test, simply enter `rspec` on the command line.
